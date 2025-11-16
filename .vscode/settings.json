@@ -3,6 +3,10 @@
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
   "editor.trimAutoWhitespace": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "tasks.runOn": "save",
   "[javascript]": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true,

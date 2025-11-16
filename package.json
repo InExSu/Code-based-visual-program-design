@@ -8,7 +8,10 @@
     "test": "node src/index.js",
     "lint": "eslint src/**/*.js",
     "lint:fix": "eslint src/**/*.js --fix",
-    "docs": "jsdoc -c jsdoc.conf.json"
+    "docs": "jsdoc -c jsdoc.conf.json",
+    "mermaid": "node src/dharma_2_Mermaid.js",
+    "watch:karma": "node src/aKarma_Make.js",
+    "build": "npm run mermaid && npm run watch:karma"
   },
   "keywords": [
     "dag",

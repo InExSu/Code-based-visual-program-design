@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Generate Mermaid Diagram",
+      "type": "shell",
+      "command": "node",
+      "args": ["src/dharma_2_Mermaid.js"],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate Karma Functions",
+      "type": "shell",
+      "command": "node",
+      "args": ["src/aKarma_Make.js"],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Generate Mermaid Diagram", "Generate Karma Functions"],
+      "group": "build"
+    }
+  ]
+}
