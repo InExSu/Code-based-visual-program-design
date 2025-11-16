@@ -12,6 +12,18 @@
         "${workspaceFolder}/**",
         "!**/node_modules/**"
       ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run aRUN.js",
+      "program": "${workspaceFolder}/src/aRUN.js",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
     }
   ]
 }

@@ -5,14 +5,14 @@ const karma = {
   'f4': () => ({ state: '', info: 'данные f4' }),
   'f5': () => ({ state: '', info: 'данные f5' }),
   'f6': async() => {
-    for (let i = 1; i <= 40; i++) {
-      console.log('%c🟡 f6: строка ' + i, 'color: yellow; font-weight: bold;');
+    for (let i = 1; i <= 10; i++) {
+      console.log('%c🟡 5: строка ' + i, 'color: yellow; font-weight: bold;');
       await new Promise(resolve => setTimeout(resolve, 20));
     }
     return { state: '', info: 'данные f6' };
   },
   'f7': async() => {
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 3; i++) {
       console.log('%c🔴 f7: строка ' + i, 'color: red; font-weight: bold;');
       await new Promise(resolve => setTimeout(resolve, 35));
     }

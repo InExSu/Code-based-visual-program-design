@@ -1,5 +1,13 @@
 import { parseGraph } from './utils.js';
 
+const State = {
+  INIT: 'init',
+  WAIT_PARENTS: 'wait_parents',
+  RUNNING: 'running',
+  COMPLETE: 'complete',
+  ERROR: 'error'
+};
+
 async function sansara(dharma, karma, exitHandler = 'buddha', options = {}) {
   const { allNodes, deps } = parseGraph(dharma);
 
@@ -32,75 +40,110 @@ async function sansara(dharma, karma, exitHandler = 'buddha', options = {}) {
     }
   }
 
-  const results = {};
-  const completions = {};
-  const indentMap = {};
+  // Состояния выполнения узлов
+  const nodeStates = new Map();
+  const results = new Map();
+  const indentMap = new Map();
 
-  // Инициализация корневых узлов
-  for (const node of allNodes) {
-    indentMap[node] = 0;
-    if (deps[node].length === 0) {
-      completions[node] = Promise.resolve();
-    }
+  // Инициализация
+  allNodes.forEach(node => {
+    nodeStates.set(node, State.INIT);
+    indentMap.set(node, 0);
+  });
+
+  // Хранение промисов выполнения для каждого узла
+  const completions = new Map();
+
+  function runNode(node) {
+    return new Promise(async (resolve, reject) => {
+
+      let state = nodeStates.get(node);
+
+      while (state !== State.COMPLETE && state !== State.ERROR) {
+        switch (state) {
+          case State.INIT: {
+            // Ставим ожидание данных родителей
+            state = State.WAIT_PARENTS;
+            nodeStates.set(node, state);
+            break;
+          }
+          case State.WAIT_PARENTS: {
+            try {
+              const parentPromises = deps[node].map(p => completions.get(p));
+              await Promise.all(parentPromises);
+              state = State.RUNNING;
+              nodeStates.set(node, state);
+            } catch (error) {
+              state = State.ERROR;
+              nodeStates.set(node, state);
+              reject(error);
+              return;
+            }
+            break;
+          }
+          case State.RUNNING: {
+            const order = ++executionOrder;
+            const indent = deps[node].length === 0 ? 0 : Math.max(...deps[node].map(p => indentMap.get(p) || 0), 0) + 1;
+            indentMap.set(node, indent);
+
+            log(`▶ #${order} START: ${node} [+${Date.now() - startTime}ms]`, colors.start, indent);
+
+            if (!karma[node]) {
+              const errMsg = `Function ${node} not found in karma`;
+              log(`✗ ERROR in ${node}: ${errMsg}`, colors.error, indent);
+              state = State.ERROR;
+              nodeStates.set(node, state);
+              reject(new Error(errMsg));
+              return;
+            }
+
+            try {
+              const inputMap = {};
+              for (const parent of deps[node]) {
+                inputMap[parent] = results.get(parent);
+              }
+              const result = await Promise.resolve(karma[node](inputMap));
+              results.set(node, result);
+
+              if (!result?.info || result.info.trim() === '') {
+                log(`⏹ STOPPED: ${node} (empty info)`, colors.stopped, indent);
+              } else {
+                const duration = Date.now() - startTime;
+                const resultInfo = logConfig.showResults ? ` → info: "${result.info}"` : '';
+                log(`✓ COMPLETE: ${node} (${duration}ms)${resultInfo}`, colors.complete, indent);
+              }
+
+              state = State.COMPLETE;
+              nodeStates.set(node, state);
+              resolve(result);
+            } catch (error) {
+              log(`✗ ERROR in ${node}: ${error.message}`, colors.error, indent);
+              state = State.ERROR;
+              nodeStates.set(node, state);
+              reject(error);
+            }
+            break;
+          }
+          default:
+            reject(new Error(`Unexpected state ${state} for node ${node}`));
+            return;
+        }
+      }
+    });
   }
 
-  console.log('═══════════════════════════════════════');
-  log('🚀 Starting execution graph (async)', colors.start, 0);
-  console.log('───────────────────────────────────────');
+  // Запускаем выполнение всех узлов и сохраняем их промисы
+  allNodes.forEach(node => {
+    completions.set(node, runNode(node));
+  });
 
-  const promises = [];
-  for (const node of allNodes) {
-    const p = (async () => {
-      // Ждём всех родителей
-      const parentPromises = deps[node].map(p => completions[p]);
-      await Promise.all(parentPromises);
-
-      const order = ++executionOrder;
-      const indent = deps[node].length === 0 ? 0 : Math.max(...deps[node].map(p => indentMap[p] || 0), 0) + 1;
-      indentMap[node] = indent;
-      const nodeStartTime = Date.now();
-
-      log(`▶ #${order} START: ${node} [+${Date.now() - startTime}ms]`, colors.start, indent);
-
-      if (!karma[node]) {
-        throw new Error(`Function ${node} not found in karma`);
-      }
-
-      try {
-        // Передаём данные по именам родителей
-        const inputMap = {};
-        for (const parent of deps[node]) {
-          inputMap[parent] = results[parent];
-        }
-
-        // Единая обработка sync/async
-        const result = await Promise.resolve(karma[node](inputMap));
-
-        results[node] = result;
-
-        if (!result?.info || result.info.trim() === '') {
-          log(`⏹ STOPPED: ${node} (empty info)`, colors.stopped, indent);
-        } else {
-          const duration = Date.now() - nodeStartTime;
-          const resultInfo = logConfig.showResults ? ` → info: "${result.info}"` : '';
-          log(`✓ COMPLETE: ${node} (${duration}ms)${resultInfo}`, colors.complete, indent);
-        }
-
-        return result;
-      } catch (error) {
-        log(`✗ ERROR in ${node}: ${error.message}`, colors.error, indent);
-        throw error;
-      }
-    })();
-    completions[node] = p;
-    promises.push(p);
+  try {
+    await Promise.all(completions.values());
+  } catch (err) {
+    log(`✗ Execution halted: ${err.message}`, colors.error);
   }
 
-  await Promise.all(promises);
-
-  console.log('───────────────────────────────────────');
-
-  const allInfo = Object.values(results)
+  const allInfo = [...results.values()]
     .map(r => r?.info)
     .filter(info => info && info.trim() !== '')
     .join('');
