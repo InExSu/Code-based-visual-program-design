@@ -4,12 +4,12 @@
   "type": "module",
   "description": "Библиотека для визуального проектирования программ через код. Позволяет создавать наглядные схемы параллельных и асинхронных программ с помощью декларативного движка выполнения DAG-графа.",
   "main": "src/index.js",
-   "scripts": {
-     "test": "node src/index.js",
-     "lint": "eslint src/**/*.js",
-     "lint:fix": "eslint src/**/*.js --fix",
-     "docs": "jsdoc -c jsdoc.conf.json"
-   },
+  "scripts": {
+    "test": "node src/index.js",
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix",
+    "docs": "jsdoc -c jsdoc.conf.json"
+  },
   "keywords": [
     "dag",
     "workflow",
