@@ -1,0 +1,41 @@
+{
+  "name": "code-based-visual-program-design",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Библиотека для визуального проектирования программ через код. Позволяет создавать наглядные схемы параллельных и асинхронных программ с помощью декларативного движка выполнения DAG-графа.",
+  "main": "src/index.js",
+   "scripts": {
+     "test": "node src/index.js",
+     "lint": "eslint src/**/*.js",
+     "lint:fix": "eslint src/**/*.js --fix",
+     "docs": "jsdoc -c jsdoc.conf.json"
+   },
+  "keywords": [
+    "dag",
+    "workflow",
+    "visualization",
+    "async",
+    "parallel",
+    "programming",
+    "graph"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "jsdoc": "^4.0.0"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michaelpopov/code-based-visual-program-design.git"
+  },
+  "bugs": {
+    "url": "https://github.com/michaelpopov/code-based-visual-program-design/issues"
+  },
+  "homepage": "https://github.com/michaelpopov/code-based-visual-program-design#readme"
+}
