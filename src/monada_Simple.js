@@ -10,6 +10,7 @@ function monada_Chain(steps, initialData) {
   for (const { fn, arg } of steps) {
     try {
       data = fn(data, arg)
+      // Можно создавать декораторы
       console.log(`[${fn.name}] ✓`, JSON.stringify(data))
     } catch (e) {
       console.log(`[${fn.name}] ✗ Ошибка:`, e.message)
@@ -26,7 +27,7 @@ function monada_Chain(steps, initialData) {
 // const f3 = (data, arg) => ({ ...data, f3: arg })
 
 const f1 = (data, arg) => {
-  console.log('В f1 пришло:', data, 'с аргументом:', arg)
+
   // Добавим поле с длиной строки аргумента
   const length = typeof arg === 'string' ? arg.length : 0
 
@@ -38,7 +39,7 @@ const f1 = (data, arg) => {
 }
 
 const f2 = (data, arg) => {
-  console.log('В f2 пришло:', data, 'с аргументом:', arg)
+
   // Добавим поле с аргументом в верхнем регистре
   const upper = typeof arg === 'string' ? arg.toUpperCase() : arg
 
@@ -50,7 +51,6 @@ const f2 = (data, arg) => {
 }
 
 const f3 = (data, arg) => {
-  console.log('В f3 пришло:', data, 'с аргументом:', arg)
   return { ...data, f3: arg }
 }
 
@@ -64,4 +64,5 @@ const result = monada_Chain(
   {},
 )
 
-console.log('Финальный результат:', result)
+console.clear()
+console.log('Final countdown:', result)
