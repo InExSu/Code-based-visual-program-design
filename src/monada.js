@@ -1,15 +1,3 @@
-// A monadic chain for a single-threaded program
-const result = monada_Chain(
-  [
-    { fn: f1, arg: 'x' },
-    { fn: f2, arg: 'y' },
-    { fn: f3, arg: 'z' },
-  ],
-  {},
-)
-
-console.log('Финальный результат:', result)
-
 /**
  * A monadic chain for a single-threaded program
  * @param {*} steps 
@@ -65,3 +53,15 @@ const f3 = (data, arg) => {
   console.log('В f3 пришло:', data, 'с аргументом:', arg)
   return { ...data, f3: arg }
 }
+
+// A monadic chain example for a single-threaded program
+const result = monada_Chain(
+  [
+    { fn: f1, arg: 'x' },
+    { fn: f2, arg: 'y' },
+    { fn: f3, arg: 'z' },
+  ],
+  {},
+)
+
+console.log('Финальный результат:', result)
