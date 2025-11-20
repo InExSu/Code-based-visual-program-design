@@ -25,6 +25,7 @@ const right = value => ({
 const left = error => ({
   chain: () => left(error),
   map: () => left(error),
+  // eslint-disable-next-line no-unused-vars
   fold: (onLeft, _) => onLeft(error),
   catch: recoveryFn => recoveryFn(error),
   thru: fn => fn(left(error)),
