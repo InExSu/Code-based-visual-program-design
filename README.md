@@ -142,11 +142,6 @@ The greatest advantage of network models is the ability to represent **any kind 
 
 > **Kuznetsov P.G.** Science of Life Development: collected works. Volume III. Correct application of law / P.G. Kuznetsov. — Moscow: Russian Cosmic Society, 2015. — 560 p.: ill.
 
-#### 🗺️ **Parondzhanov Vladimir Daniilovich**
-**D**racon **L**anguage (friendly Russian algorithmic language providing clarity and reliability)
-
-🔗 [Official DRAKON site](https://drakon.su/)
-
 #### 🔧 **Shalyto Anatoly Abramovich**
 > *"When a client asks to make a program, he usually describes the desired behavior in words. The programmer usually cannot show how the program will behave."*
 
